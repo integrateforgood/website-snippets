@@ -1,4 +1,4 @@
-const data = {
+export const data = {
 	type: 'excalidraw',
 	version: 2,
 	source: 'https://excalidraw.com',
