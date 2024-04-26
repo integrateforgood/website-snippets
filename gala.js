@@ -197,7 +197,6 @@ function spinningText(wrapper) {
 
 const spinners = document.querySelectorAll('[data-spinner]');
 spinners.forEach(spinner => spinningText(spinner));
-
 // endregion
 
 // region Image Reveal
