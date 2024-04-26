@@ -2,7 +2,6 @@ import { gsap } from 'https://cdn.skypack.dev/gsap?min'
 import { ScrollTrigger } from 'https://cdn.skypack.dev/gsap/ScrollTrigger?min'
 import Lenis from 'https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm'
 import SplitType from 'https://cdn.jsdelivr.net/npm/split-type@0.3.4/+esm'
-
 gsap.registerPlugin(ScrollTrigger);
 const lenis = new Lenis();
 function raf(time) {
@@ -309,122 +308,6 @@ slides.forEach((slide, index) => {
 		ease: 'power4.inOut'
 	});
 });
-gsap.registerPlugin(ScrollTrigger);
-const lenis = new Lenis();
-function raf(time) {
-	lenis.raf(time);
-	requestAnimationFrame(raf);
-}
-requestAnimationFrame(raf);
-
-// region Sliding Text
-
-function slidingText(wrapper) {
-	// Get the three text elements
-	const firstText = wrapper.querySelector('[data-first-text]');
-	const secondText = wrapper.querySelector('[data-second-text]');
-	const thirdText = wrapper.querySelector('[data-third-text]');
-
-	// Configure "state" variables
-	let xPercent = -75;
-	let targetDirection = -0.1; // Target direction based on velocity
-	let currentDirection = -0.1; // Currently applied direction, to be interpolated
-
-	// Configure the base speed
-	const baseSpeed = 0.05; // Base movement speed
-
-	// Set initial positions
-	gsap.set([firstText, secondText, thirdText], {
-		xPercent: -75,
-		opacity: 0
-	});
-
-	// Split the text elements into words
-	const split = new SplitType(wrapper, {
-		types: 'words'
-	});
-	gsap.set(split.words, {
-		y: '200%'
-	});
-
-	// Animate the words in
-	gsap.to(split.words, {
-		y: 0,
-		opacity: 1,
-		// End position (adjust this to match the desired end point)
-		stagger: {
-			each: 0.1,
-			ease: 'power3.out'
-		} // Stagger each word by 0.1 seconds
-	});
-
-	// Create a scroll trigger for the slider
-	gsap.to(wrapper, {
-		scrollTrigger: {
-			trigger: document.body,
-			scrub: 0.25,
-			start: 'top',
-			end: 'bottom',
-			onUpdate: self => {
-				// Determine the target direction based on velocity, ensuring a base speed
-				const velocity = Math.min(Math.max(self.getVelocity() / 1000, -6), 6);
-				targetDirection = Math.abs(velocity) > baseSpeed ? velocity * -1 : -baseSpeed;
-			}
-		},
-		x: '-500px'
-	});
-
-	// Setup a variable to hold a reference to the timeout
-	let scrollTimeout;
-
-	// Function to be called when scroll stops
-	function onScrollEnd() {
-		// Adjust the targetDirection to baseSpeed if it's not already there
-		if (Math.abs(targetDirection) !== baseSpeed) {
-			gsap.to({}, {
-				duration: 0.25,
-				onComplete: () => {
-					targetDirection = -baseSpeed;
-				}
-			});
-		}
-	}
-
-	// Setup event listener to detect when scrolling stops
-	window.addEventListener('scroll', () => {
-		// Clear the previous timeout
-		clearTimeout(scrollTimeout);
-
-		// Set a new timeout
-		scrollTimeout = setTimeout(onScrollEnd, 100); // 100 milliseconds of no scroll to consider it stopped
-	});
-
-	// Animation loop
-	const animate = () => {
-		if (xPercent < -100) {
-			xPercent = 0;
-		} else if (xPercent > 0) {
-			xPercent = -100;
-		}
-
-		// Smoothly interpolate currentDirection towards targetDirection
-		currentDirection = gsap.utils.interpolate(currentDirection, targetDirection, 0.1); // Adjust the smoothing factor as needed
-
-		xPercent += currentDirection;
-		gsap.set([firstText, secondText, thirdText], {
-			xPercent: xPercent
-		});
-		requestAnimationFrame(animate);
-	};
-
-	// Start the animation loop
-	targetDirection = -baseSpeed;
-	requestAnimationFrame(animate);
-}
-const sliders = document.querySelectorAll('[data-slider]');
-sliders.forEach(slider => slidingText(slider));
-
-// endregion
 
 // region Image Reveal
 function groupByRow(items) {
