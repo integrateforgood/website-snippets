@@ -6615,7 +6615,12 @@ export const data = {
   ],
   appState: {
     gridSize: null,
-    viewBackgroundColor: "#f8fcfc"
+    viewBackgroundColor: "#f8fcfc",
+    zoom: {
+      value: 0.5,
+    },
+    scrollX: 0,
+    scrollY: 0,
   },
   files: {}
 }
